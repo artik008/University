@@ -1,0 +1,20 @@
+start :- new(DW, dialog('Окно моей программы')),
+		 new(Picture, picture),
+		 send(Picture, width(350)),
+		 send(Picture, height(350)),
+		 send_list(DW,append, [Picture, 
+		 	new(Width, int_item(width, low := 10, high := 300, default := 150)),
+		    new(Height,int_item(height, low := 10, high := 300, default := 150))]),
+		 send(DW, append, new(X, int_item(x_coord, default := 10))),
+		 send(DW, append, new(Y, int_item(y_coord, default :=10))),
+		 send_list(DW,append, [button('нарисовать прямоугольник',
+					message(@prolog,mybox, Picture, Width?selection, Height?selection, X?selection, Y?selection)),
+							   button('нарисовать эллипс',
+					message(@prolog,myellipse, Picture, Width?selection, Height?selection, X?selection, Y?selection)),
+							   button('стереть', 
+					message(Picture,clear))]),
+		send(DW, append, button(exit, and(message(DW, destroy), message(Picture, destroy)))),
+		send(Picture, open),
+		send(DW, open).
+mybox(Picture,Width,Height,X,Y) :- send(Picture, display, new(_,box(Width,Height)), point(X,Y)).
+myellipse(Picture,Width,Height,X,Y) :- send(Picture, display, new(_,ellipse(Width,Height)), point(X,Y)).
